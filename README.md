@@ -6,7 +6,9 @@ root@OpenWrt:~# cat /etc/rc.local
 
 
 modprobe dvb-usb-dib0700
+
 wait 5
+
 /etc/init.d/minisatip restart
 
 exit 0
