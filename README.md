@@ -12,7 +12,11 @@ exit 0
 
 
 root@OpenWrt:~#  strings /lib/modules/6.6.77/dvb-usb-dib0700.ko | grep depends
+
 depends=usbcore,dib0090,dib7000m,dib0070,dvb-usb,rc-core,dib3000mc
+
 __UNIQUE_ID_depends240
+
 __UNIQUE_ID_depends240
+
 root@OpenWrt:~# 
