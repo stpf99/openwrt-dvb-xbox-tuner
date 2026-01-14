@@ -3,17 +3,29 @@ openwrt-ramips-mt7620-asus_rt-ac51u-squashfs-sysupgrade.bin 14.02.2025
 ----------------------------------------------------------------------
 root@OpenWrt:~# cat /etc/rc.local 
 
+# Put your custom commands here that should be executed once
+
+# the system init finished. By default this file does nothing.
 
 
-modprobe dvb-usb-dib0700
+#/etc/init.d/minisatip restart
 
-wait 5
+echo "1-1.2" > /sys/bus/usb/drivers/usb/unbind
 
-/etc/init.d/minisatip restart
+sleep 2
+
+echo "1-1.2" > /sys/bus/usb/drivers/usb/bind
+
+#modprobe dvb-usb-dib0700
+
+#modprobe dvb-usb-dw2102
+
+#wait 5
+
 
 exit 0
 
-
+root@OpenWrt:~# 
 -------------------------------------------------------------------------------
 root@OpenWrt:~#  strings /lib/modules/6.6.77/dvb-usb-dib0700.ko | grep depends
 
