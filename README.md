@@ -3,11 +3,6 @@ openwrt-ramips-mt7620-asus_rt-ac51u-squashfs-sysupgrade.bin 14.02.2025
 ----------------------------------------------------------------------
 root@OpenWrt:~# cat /etc/rc.local 
 
-# Put your custom commands here that should be executed once
-
-# the system init finished. By default this file does nothing.
-
-
 #/etc/init.d/minisatip restart
 
 echo "1-1.2" > /sys/bus/usb/drivers/usb/unbind
