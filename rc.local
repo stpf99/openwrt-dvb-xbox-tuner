@@ -1,25 +1,28 @@
 #!/bin/sh
 
-# Auto-wykryj i przeładuj wszystkie urządzenia DVB USB
+rm -f /tmp/dvb_devices
 
+# Szukaj po katalogu /dvb w sysfs — wyklucz huby USB
 for dev in /sys/bus/usb/devices/*/; do
-    product=$(cat "$dev/product" 2>/dev/null)
-    idVendor=$(cat "$dev/idVendor" 2>/dev/null)
-    idProduct=$(cat "$dev/idProduct" 2>/dev/null)
-    
-    # Sprawdź czy to urządzenie DVB
+    # Pomiń jeśli to hub (bClass=09)
+    bClass=$(cat "$dev/bDeviceClass" 2>/dev/null)
+    [ "$bClass" = "09" ] && continue
+
     if [ -d "$dev/dvb" ] || ls "$dev"*/dvb 2>/dev/null | grep -q dvb; then
         busnum=$(cat "$dev/busnum" 2>/dev/null)
         devpath=$(cat "$dev/devpath" 2>/dev/null)
         usbid="$busnum-$devpath"
-        echo "Znaleziono DVB: $product ($usbid)"
+        echo "Znaleziono DVB: $(cat "$dev/product" 2>/dev/null) ($usbid)"
         echo "$usbid" >> /tmp/dvb_devices
     fi
 done
 
-# Jeśli nie znalazło przez /dvb, szukaj po znanych nazwach
+# Fallback — szukaj po znanych nazwach, wyklucz huby
 if [ ! -s /tmp/dvb_devices ]; then
     for dev in /sys/bus/usb/devices/*/; do
+        bClass=$(cat "$dev/bDeviceClass" 2>/dev/null)
+        [ "$bClass" = "09" ] && continue
+
         product=$(cat "$dev/product" 2>/dev/null)
         case "$product" in
             *Cinergy*|*Xbox*One*|*Tuner*|*DVB*|*dib0700*|*dw2102*)
@@ -50,6 +53,8 @@ done < /tmp/dvb_devices
 
 rm -f /tmp/dvb_devices
 
+echo "Restartuję minisatip..."
+sleep 2
 /etc/init.d/minisatip restart
 
 exit 0
